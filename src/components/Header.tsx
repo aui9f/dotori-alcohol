@@ -1,6 +1,10 @@
 import styled from "styled-components";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const Head = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   margin-bottom: 8px;
   background-color: #9f8473;
 `;

@@ -18,14 +18,15 @@ const Item = styled.div`
   border: 1px solid #eeeeee;
 `;
 
-const Image = styled.div`
+const Image = styled.div<{ height: string }>`
   width: 100%;
-  padding-top: 60%;
+  padding-top: ${(props) => props.height};
   background-color: rgba(222, 222, 222, 0.2);
   margin-bottom: 8px;
   img {
   }
 `;
+
 const Text = styled.div`
   padding: 8px;
   h3 {
@@ -72,7 +73,7 @@ export default function Offline() {
     <Wrapper>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
@@ -98,7 +99,7 @@ export default function Offline() {
       </List>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
@@ -124,7 +125,7 @@ export default function Offline() {
       </List>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
@@ -150,7 +151,7 @@ export default function Offline() {
       </List>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
@@ -176,7 +177,7 @@ export default function Offline() {
       </List>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
@@ -202,7 +203,7 @@ export default function Offline() {
       </List>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
@@ -228,7 +229,7 @@ export default function Offline() {
       </List>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
@@ -254,7 +255,7 @@ export default function Offline() {
       </List>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
@@ -280,7 +281,7 @@ export default function Offline() {
       </List>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
@@ -306,7 +307,7 @@ export default function Offline() {
       </List>
       <List>
         <Item>
-          <Image>
+          <Image height="60%">
             <img src="" />
           </Image>
           <Text>
