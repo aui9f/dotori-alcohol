@@ -28,11 +28,11 @@ const Menu = styled.ul`
   display: flex;
   align-items: center;
 `;
-const Item = styled.li<{ isActive: string }>`
+const Item = styled.li<{ isactive: string }>`
   margin: 0 12px;
   a {
-    color: ${(props) => (props.isActive === "active" ? "#FFFFFF" : "#dddddd")};
-    font-weight: ${(props) => (props.isActive === "active" ? "bold" : "")};
+    color: ${(props) => (props.isactive === "active" ? "#FFFFFF" : "#dddddd")};
+    font-weight: ${(props) => (props.isactive === "active" ? "bold" : "")};
   }
 `;
 
@@ -58,16 +58,16 @@ export default function Header() {
       </Logo>
       <Nav>
         <Menu>
-          <Item isActive={pathname === "/offline" ? "active" : ""}>
+          <Item isactive={pathname === "/offline" ? "active" : ""}>
             <Link to="/offline">현실공간</Link>
           </Item>
-          <Item isActive={pathname === "/information" ? "active" : ""}>
+          <Item isactive={pathname === "/information" ? "active" : ""}>
             <Link to="/information">정보</Link>
           </Item>
-          <Item isActive={pathname === "/" ? "active" : ""}>
+          <Item isactive={pathname === "/" ? "active" : ""}>
             <Link to="/">가양주</Link>
           </Item>
-          <Item isActive={pathname === "/mypage" ? "active" : ""}>
+          <Item isactive={pathname === "/mypage" ? "active" : ""}>
             <Link to="/mypage">내정보</Link>
           </Item>
         </Menu>

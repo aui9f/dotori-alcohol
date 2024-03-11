@@ -1,3 +1,6 @@
+import { fetchBrewery, IBrewery } from "@/api/go";
+import { useEffect } from "react";
+import { useQuery } from "react-query";
 import styled from "styled-components";
 
 const Wrapper = styled.ul`
@@ -69,6 +72,12 @@ const Info = styled.div`
 `;
 
 export default function Offline() {
+  const { isLoading, data } = useQuery<IBrewery>("brewery", () =>
+    fetchBrewery(1, 20)
+  );
+
+  console.log(data);
+
   return (
     <Wrapper>
       <List>
@@ -97,7 +106,8 @@ export default function Offline() {
           </Info>
         </Item>
       </List>
-      <List>
+
+      {/* <List>
         <Item>
           <Image height="60%">
             <img src="" />
@@ -123,214 +133,7 @@ export default function Offline() {
           </Info>
         </Item>
       </List>
-      <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
-          <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
-          </Text>
-          <Tag>
-            <span>#과실주</span>
-          </Tag>
-
-          <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info>
-        </Item>
-      </List>
-      <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
-          <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
-          </Text>
-          <Tag>
-            <span>#과실주</span>
-          </Tag>
-
-          <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info>
-        </Item>
-      </List>
-      <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
-          <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
-          </Text>
-          <Tag>
-            <span>#과실주</span>
-          </Tag>
-
-          <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info>
-        </Item>
-      </List>
-      <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
-          <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
-          </Text>
-          <Tag>
-            <span>#과실주</span>
-          </Tag>
-
-          <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info>
-        </Item>
-      </List>
-      <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
-          <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
-          </Text>
-          <Tag>
-            <span>#과실주</span>
-          </Tag>
-
-          <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info>
-        </Item>
-      </List>
-      <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
-          <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
-          </Text>
-          <Tag>
-            <span>#과실주</span>
-          </Tag>
-
-          <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info>
-        </Item>
-      </List>
-      <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
-          <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
-          </Text>
-          <Tag>
-            <span>#과실주</span>
-          </Tag>
-
-          <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info>
-        </Item>
-      </List>
-      <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
-          <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
-          </Text>
-          <Tag>
-            <span>#과실주</span>
-          </Tag>
-
-          <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info>
-        </Item>
-      </List>
+    */}
     </Wrapper>
   );
 }

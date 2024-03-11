@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import App from "./App";
 import reset from "styled-reset";
 import { createGlobalStyle } from "styled-components";
+
 // Create a client
 const queryClient = new QueryClient();
 const GlobalStyled = createGlobalStyle`
