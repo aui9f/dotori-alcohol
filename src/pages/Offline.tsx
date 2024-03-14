@@ -1,6 +1,8 @@
-import { fetchBrewery, IBrewery } from "@/api/go";
-import { useEffect } from "react";
+import { IBrewery, IBreweryData, visitingBrewery } from "@/api/atom";
+import { fetchBrewery } from "@/api/go";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
 const Wrapper = styled.ul`
@@ -51,51 +53,101 @@ const Tag = styled.div`
   }
 `;
 
-const Info = styled.div`
-  width: 80%;
-  margin: 16px auto 8px;
-  display: flex;
-  > div {
-    padding: 8px;
-    flex: 1;
-    text-align: center;
-    &:first-child {
-      border-right: 1px solid #eeeeee;
-    }
-    img {
-      margin-top: 8px;
-      width: 24px;
-      height: 24px;
-      background-color: red;
-    }
-  }
-`;
+// const Info = styled.div`
+//   width: 80%;
+//   margin: 16px auto 8px;
+//   display: flex;
+//   > div {
+//     padding: 8px;
+//     flex: 1;
+//     text-align: center;
+//     &:first-child {
+//       border-right: 1px solid #eeeeee;
+//     }
+//     img {
+//       margin-top: 8px;
+//       width: 24px;
+//       height: 24px;
+//       background-color: red;
+//     }
+//   }
+// `;
 
 export default function Offline() {
-  const { isLoading, data } = useQuery<IBrewery>("brewery", () =>
-    fetchBrewery(1, 20)
+  const [pageNum, setPageNum] = useState(1);
+  const [breweryList, setBreweryList] =
+    useRecoilState<IBreweryData[]>(visitingBrewery);
+
+  const { data, isLoading } = useQuery<IBrewery>(
+    ["brewery", pageNum],
+    () => fetchBrewery(pageNum),
+    {
+      refetchOnWindowFocus: false, // react-query는 사용자가 사용하는 윈도우가 다른 곳을 갔다가 다시 화면으로 돌아오면 이 함수를 재실행합니다. 그 재실행 여부 옵션 입니다.
+      enabled: pageNum * 10 !== breweryList.length,
+      onSuccess: (data) => {
+        setTimeout(function () {
+          document.body.style.overflow = "unset";
+        }, 1000);
+
+        setBreweryList(() => [
+          ...breweryList,
+          ...data.data.map((x) => {
+            return {
+              대표자명: x["대표자명"],
+              연락처: x["연락처"],
+              제조사: x["제조사"],
+              주소: x["주소"],
+              주종: x["주종"],
+              홈페이지: x["홈페이지"],
+              주종리스트: x["주종"].split(","),
+            };
+          }),
+        ]);
+      },
+    }
   );
 
-  console.log(data);
+  const scrollToBottom = (): void => {
+    const { innerHeight } = window;
+    const { scrollHeight } = document.body;
+    const { scrollTop } = document.documentElement;
+
+    if (Math.round(scrollTop + innerHeight) >= scrollHeight) {
+      document.body.style.overflow = "hidden";
+      setPageNum(pageNum + 1);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", scrollToBottom, true);
+    return () => {
+      window.removeEventListener("scroll", scrollToBottom, true);
+    };
+  }, [scrollToBottom]);
 
   return (
     <Wrapper>
-      <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
+      {breweryList.map((brewery, index) => (
+        <List key={index}>
+          <Item>
+            <Image height="60%">
+              <img src="" />
+            </Image>
+          </Item>
           <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
+            <h3>{brewery["제조사"]}</h3>
+            <p>📍 {brewery["주소"]}</p>
+            <p>📱 {brewery["연락처"]}</p>
+            <a href={brewery["홈페이지"]} target="_blank">
+              🔗 홈페이지이동
+            </a>
           </Text>
           <Tag>
-            <span>#과실주</span>
+            {brewery["주종리스트"]?.map((x, xIndex) => (
+              <span key={xIndex}>#{x}</span>
+            ))}
           </Tag>
-
-          <Info>
+          {/* <Info>
             <div>
               <p>상시방문</p>
               <img />
@@ -103,9 +155,9 @@ export default function Offline() {
             <div>
               <p>예약방문</p>
             </div>
-          </Info>
-        </Item>
-      </List>
+          </Info> */}
+        </List>
+      ))}
 
       {/* <List>
         <Item>
