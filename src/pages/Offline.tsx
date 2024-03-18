@@ -1,51 +1,60 @@
-import { IBrewery, IBreweryData, visitingBrewery } from "@/api/atom";
+import {
+  getIsLoading,
+  IBrewery,
+  IBreweryData,
+  visitingBrewery,
+  visitingBreweryMax,
+  visitingBreweryPage,
+} from "@/api/atom";
 import { fetchBrewery } from "@/api/go";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
 
 const Wrapper = styled.ul`
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
-
   display: grid;
-
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: auto;
   grid-gap: 4px;
-`;
-const List = styled.li`
-  padding: 8px;
-`;
-const Item = styled.div`
-  border: 1px solid #eeeeee;
+  li {
+    padding: 8px;
+  }
 `;
 
-const Image = styled.div<{ height: string }>`
+const Image = styled.div<{ name: string; height: string }>`
   width: 100%;
-  padding-top: ${(props) => props.height};
-  background-color: rgba(222, 222, 222, 0.2);
-  margin-bottom: 8px;
-  img {
+
+  border: 1px solid #eeeeee;
+  background-color: rgba(0, 0, 0, 0.2);
+  > div {
+    padding-top: ${(props) => props.height};
+    background-image: url(http://localhost:5173/public/offline/${(props) =>
+      props.name}.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 `;
 
 const Text = styled.div`
-  padding: 8px;
-  h3 {
-    font-weight: bold;
-    font-size: 120%;
-  }
-  p{
-    margin: 8px; 0;
-  }
+padding: 8px;
+h3 {
+  font-weight: bold;
+  font-size: 120%;
+}
+p{
+  margin: 8px; 0;
+}
 `;
 
 const Tag = styled.div`
   padding: 0 8px;
   span {
+    margin: 2px;
     font-size: 80%;
     background-color: #eeeeee;
     padding: 4px 8px;
@@ -53,42 +62,27 @@ const Tag = styled.div`
   }
 `;
 
-// const Info = styled.div`
-//   width: 80%;
-//   margin: 16px auto 8px;
-//   display: flex;
-//   > div {
-//     padding: 8px;
-//     flex: 1;
-//     text-align: center;
-//     &:first-child {
-//       border-right: 1px solid #eeeeee;
-//     }
-//     img {
-//       margin-top: 8px;
-//       width: 24px;
-//       height: 24px;
-//       background-color: red;
-//     }
-//   }
-// `;
-
 export default function Offline() {
-  const [pageNum, setPageNum] = useState(1);
+  const [isLoading, setIsLoding] = useRecoilState(getIsLoading);
+  const [pageNum, setPageNum] = useRecoilState(visitingBreweryPage);
+  const [maxNum, setMaxNum] = useRecoilState(visitingBreweryMax);
   const [breweryList, setBreweryList] =
     useRecoilState<IBreweryData[]>(visitingBrewery);
 
-  const { data, isLoading } = useQuery<IBrewery>(
+  // setIsLoding(true);
+  const { data } = useQuery<IBrewery>(
     ["brewery", pageNum],
     () => fetchBrewery(pageNum),
     {
       refetchOnWindowFocus: false, // react-query는 사용자가 사용하는 윈도우가 다른 곳을 갔다가 다시 화면으로 돌아오면 이 함수를 재실행합니다. 그 재실행 여부 옵션 입니다.
-      enabled: pageNum * 10 !== breweryList.length,
+      // enabled: pageNum !== Math.trunc(maxNum / 10), //조건
       onSuccess: (data) => {
         setTimeout(function () {
           document.body.style.overflow = "unset";
-        }, 1000);
+          setIsLoding(false);
+        }, 1500);
 
+        setMaxNum(data.matchCount);
         setBreweryList(() => [
           ...breweryList,
           ...data.data.map((x) => {
@@ -113,8 +107,12 @@ export default function Offline() {
     const { scrollTop } = document.documentElement;
 
     if (Math.round(scrollTop + innerHeight) >= scrollHeight) {
-      document.body.style.overflow = "hidden";
-      setPageNum(pageNum + 1);
+      if (!isLoading && pageNum !== Math.trunc(maxNum / 10)) {
+        document.body.style.overflow = "hidden";
+        setIsLoding(true);
+
+        setPageNum(pageNum + 1);
+      }
     }
   };
 
@@ -128,12 +126,11 @@ export default function Offline() {
   return (
     <Wrapper>
       {breweryList.map((brewery, index) => (
-        <List key={index}>
-          <Item>
-            <Image height="60%">
-              <img src="" />
-            </Image>
-          </Item>
+        <li key={index}>
+          <Image height="60%" name={brewery["제조사"]}>
+            <div></div>
+          </Image>
+
           <Text>
             <h3>{brewery["제조사"]}</h3>
             <p>📍 {brewery["주소"]}</p>
@@ -147,45 +144,8 @@ export default function Offline() {
               <span key={xIndex}>#{x}</span>
             ))}
           </Tag>
-          {/* <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info> */}
-        </List>
+        </li>
       ))}
-
-      {/* <List>
-        <Item>
-          <Image height="60%">
-            <img src="" />
-          </Image>
-          <Text>
-            <h3>산머루농원</h3>
-            <p>📍 경기 파주시 적성면 객현리 67-1</p>
-            <p>📱 031-958-4558</p>
-            <p>🔗 https://www.sanmeoru.com</p>
-          </Text>
-          <Tag>
-            <span>#과실주</span>
-          </Tag>
-
-          <Info>
-            <div>
-              <p>상시방문</p>
-              <img />
-            </div>
-            <div>
-              <p>예약방문</p>
-            </div>
-          </Info>
-        </Item>
-      </List>
-    */}
     </Wrapper>
   );
 }

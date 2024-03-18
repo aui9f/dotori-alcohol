@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 
 export interface IBreweryData {
   대표자명: string;
@@ -19,13 +19,25 @@ export interface IBrewery {
   totalCount: number;
 }
 
-export const visitingBreweryPage = atom<number>({
-  key: "paging",
-  default: 0,
+export const getIsLoading = atom<boolean>({
+  key: "isLoading",
+  default: false,
 });
+
+export const visitingBreweryPage = atom<number>({
+  key: "visitingBreweryPage",
+  default: 1,
+});
+
+export const visitingBreweryMax = atom<number>({
+  key: "visitingBreweryMax",
+  default: 1,
+});
+
 export const visitingBrewery = atom<IBreweryData[]>({
   key: "visitingBrewery",
   default: [],
 });
 
 //matchCount 총개수
+3;

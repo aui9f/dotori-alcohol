@@ -11,9 +11,7 @@ const KEY_ENCODING = `cG%2FFXOhStOmIt%2BJlAK7EbmxAODhmTmLxIpuVEKo8%2BAcV3Fk7z7Gg
 export async function fetchBrewery(page: number) {
   return await (
     await fetch(
-      `${URL}/15048756/v1/uddi:ebf9868d-7fbe-4b84-ab38-cc6bb6f0382f?page=${page}&perPage=${
-        page + 9
-      }&returnType=json&serviceKey=${KEY_ENCODING}`
+      `${URL}/15048756/v1/uddi:ebf9868d-7fbe-4b84-ab38-cc6bb6f0382f?page=${page}&perPage=10&returnType=json&serviceKey=${KEY_ENCODING}`
     )
   ).json();
 }
