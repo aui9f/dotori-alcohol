@@ -7,22 +7,24 @@ import {
   visitingBreweryPage,
 } from "@/api/atom";
 import { fetchBrewery } from "@/api/go";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useQuery } from "react-query";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 
-const Wrapper = styled.ul`
+const Wrapper = styled.div`
+  > ul {
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: 4px;
+    li {
+      padding: 8px;
+    }
+  }
   width: 100%;
   max-width: 1240px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: auto;
-  grid-gap: 4px;
-  li {
-    padding: 8px;
-  }
 `;
 
 const Image = styled.div<{ name: string; height: string }>`
@@ -62,12 +64,39 @@ const Tag = styled.div`
   }
 `;
 
+const Moddal = styled.div`
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+`;
+const ModalContent = styled.div`
+  width: 480px;
+  background-color: white;
+  margin: auto;
+  border-radius: 8px;
+`;
+const ModalHeader = styled.div`
+  padding: 8px;
+  border-bottom: 1px solid gray;
+  display: flex;
+`;
+const ModalBody = styled.div`
+  padding: 8px;
+`;
+const ModalFooter = styled.div`
+  padding: 8px;
+  border-top: 1px solid gray;
+`;
+
 export default function Offline() {
   const [isLoading, setIsLoding] = useRecoilState(getIsLoading);
   const [pageNum, setPageNum] = useRecoilState(visitingBreweryPage);
   const [maxNum, setMaxNum] = useRecoilState(visitingBreweryMax);
-  const [breweryList, setBreweryList] =
-    useRecoilState<IBreweryData[]>(visitingBrewery);
+  const [breweryList, setBreweryList] = useRecoilState(visitingBrewery);
 
   // setIsLoding(true);
   const { data } = useQuery<IBrewery>(
@@ -87,20 +116,31 @@ export default function Offline() {
           ...breweryList,
           ...data.data.map((x) => {
             return {
-              대표자명: x["대표자명"],
-              연락처: x["연락처"],
-              제조사: x["제조사"],
-              주소: x["주소"],
-              주종: x["주종"],
-              홈페이지: x["홈페이지"],
-              주종리스트: x["주종"].split(","),
+              id: x.id,
+              name: x.name,
+              addr: x.addr,
+              phone: x.phone,
+              homepage: x.homepage,
+              visit: x.visit,
+              reservation: x.reservation,
             };
           }),
+          //     return [];
+          // return {
+          //   id: x["찾아가는양조장넘버"],
+          //   name: x["양조장 이름"],
+          //   addr: x["양조장 주소"],
+          //   phone: x["양조장 연락처"],
+          //   homepage: x["양조장 홈페이지"],
+          //   visit: x["양조장 상시방문가능여부"],
+          //   reservation: x["양조장 예약방문가능여부"],
+          // };
+          //   }),
         ]);
       },
     }
   );
-
+  console.log("breweryList", breweryList);
   const scrollToBottom = (): void => {
     const { innerHeight } = window;
     const { scrollHeight } = document.body;
@@ -125,27 +165,34 @@ export default function Offline() {
 
   return (
     <Wrapper>
-      {breweryList.map((brewery, index) => (
-        <li key={index}>
-          <Image height="60%" name={brewery["제조사"]}>
-            <div></div>
-          </Image>
+      <Moddal>
+        <ModalContent>
+          <ModalHeader>
+            <div>이모티콘</div>
+            <h3>제조이름</h3>
+          </ModalHeader>
+          <ModalBody>지도</ModalBody>
+          <ModalFooter>확인버튼</ModalFooter>
+        </ModalContent>
+      </Moddal>
+      <ul>
+        {breweryList.map((brewery, index) => (
+          <li key={index}>
+            <Image height="60%" name={brewery.name}>
+              <div></div>
+            </Image>
 
-          <Text>
-            <h3>{brewery["제조사"]}</h3>
-            <p>📍 {brewery["주소"]}</p>
-            <p>📱 {brewery["연락처"]}</p>
-            <a href={brewery["홈페이지"]} target="_blank">
-              🔗 홈페이지이동
-            </a>
-          </Text>
-          <Tag>
-            {brewery["주종리스트"]?.map((x, xIndex) => (
-              <span key={xIndex}>#{x}</span>
-            ))}
-          </Tag>
-        </li>
-      ))}
+            <Text>
+              <h3>{brewery.name}</h3>
+              <p>📍 {brewery.addr}</p>
+              <p>📱 {brewery.phone}</p>
+              <a href={brewery.homepage} target="_blank">
+                🔗 홈페이지이동
+              </a>
+            </Text>
+          </li>
+        ))}
+      </ul>
     </Wrapper>
   );
 }
