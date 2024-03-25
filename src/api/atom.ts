@@ -78,5 +78,15 @@ export const visitingBrewery = atom<IBreweryData[]>({
   default: [],
 });
 
-//matchCount 총개수
-3;
+export const goingSoolSelected = atom({
+  key: "goingSoolSelected",
+  default: 0,
+});
+
+export const goingSoolSelectedList = selector<IBreweryData>({
+  key: "goingSoolSelectedList",
+  get: ({ get }) => {
+    const checked = get(goingSoolSelected);
+    return get(visitingBrewery).filter((x) => x.id === checked)[0];
+  },
+});

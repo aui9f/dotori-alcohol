@@ -1,3 +1,4 @@
+import { Children } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
 import HomeBrew from "./pages/HomeBrew";
@@ -16,6 +17,16 @@ const Router = createBrowserRouter([
       },
       {
         path: "/offline",
+        element: <Offline />,
+        // children: [
+        //   {
+        //     path: ":id",
+        //     element: <Offline />,
+        //   },
+        // ],
+      },
+      {
+        path: "/offline/:id",
         element: <Offline />,
       },
       {

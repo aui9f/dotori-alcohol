@@ -1,5 +1,6 @@
 import {
   getIsLoading,
+  goingSoolSelectedList,
   IBrewery,
   IBreweryData,
   visitingBrewery,
@@ -7,62 +8,15 @@ import {
   visitingBreweryPage,
 } from "@/api/atom";
 import { fetchBrewery } from "@/api/go";
+import Goingsool from "@/components/Goingsool";
+import KakaoMap from "@/components/KakaoMap";
 import { useEffect } from "react";
 import { useQuery } from "react-query";
-import { useRecoilState } from "recoil";
+import { Outlet, useMatch } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 
-const Wrapper = styled.div`
-  > ul {
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto;
-    grid-gap: 4px;
-    li {
-      padding: 8px;
-    }
-  }
-  width: 100%;
-  max-width: 1240px;
-`;
-
-const Image = styled.div<{ name: string; height: string }>`
-  width: 100%;
-
-  border: 1px solid #eeeeee;
-  background-color: rgba(0, 0, 0, 0.2);
-  > div {
-    padding-top: ${(props) => props.height};
-    background-image: url(http://localhost:5173/public/offline/${(props) =>
-      props.name}.png);
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-`;
-
-const Text = styled.div`
-padding: 8px;
-h3 {
-  font-weight: bold;
-  font-size: 120%;
-}
-p{
-  margin: 8px; 0;
-}
-`;
-
-const Tag = styled.div`
-  padding: 0 8px;
-  span {
-    margin: 2px;
-    font-size: 80%;
-    background-color: #eeeeee;
-    padding: 4px 8px;
-    border-radius: 16px;
-  }
-`;
+const Wrapper = styled.div``;
 
 const Moddal = styled.div`
   background-color: rgba(0, 0, 0, 0.4);
@@ -93,10 +47,15 @@ const ModalFooter = styled.div`
 `;
 
 export default function Offline() {
+  const itemId = useMatch("/offline/:id");
+
   const [isLoading, setIsLoding] = useRecoilState(getIsLoading);
   const [pageNum, setPageNum] = useRecoilState(visitingBreweryPage);
   const [maxNum, setMaxNum] = useRecoilState(visitingBreweryMax);
-  const [breweryList, setBreweryList] = useRecoilState(visitingBrewery);
+  const modalData = useRecoilValue<IBreweryData>(goingSoolSelectedList);
+
+  const [breweryList, setBreweryList] =
+    useRecoilState<IBreweryData[]>(visitingBrewery);
 
   // setIsLoding(true);
   const { data } = useQuery<IBrewery>(
@@ -125,22 +84,11 @@ export default function Offline() {
               reservation: x.reservation,
             };
           }),
-          //     return [];
-          // return {
-          //   id: x["찾아가는양조장넘버"],
-          //   name: x["양조장 이름"],
-          //   addr: x["양조장 주소"],
-          //   phone: x["양조장 연락처"],
-          //   homepage: x["양조장 홈페이지"],
-          //   visit: x["양조장 상시방문가능여부"],
-          //   reservation: x["양조장 예약방문가능여부"],
-          // };
-          //   }),
         ]);
       },
     }
   );
-  console.log("breweryList", breweryList);
+
   const scrollToBottom = (): void => {
     const { innerHeight } = window;
     const { scrollHeight } = document.body;
@@ -150,11 +98,12 @@ export default function Offline() {
       if (!isLoading && pageNum !== Math.trunc(maxNum / 10)) {
         document.body.style.overflow = "hidden";
         setIsLoding(true);
-
         setPageNum(pageNum + 1);
       }
     }
   };
+
+  //Modal Data;
 
   useEffect(() => {
     window.addEventListener("scroll", scrollToBottom, true);
@@ -165,34 +114,19 @@ export default function Offline() {
 
   return (
     <Wrapper>
-      <Moddal>
-        <ModalContent>
-          <ModalHeader>
-            <div>이모티콘</div>
-            <h3>제조이름</h3>
-          </ModalHeader>
-          <ModalBody>지도</ModalBody>
-          <ModalFooter>확인버튼</ModalFooter>
-        </ModalContent>
-      </Moddal>
-      <ul>
-        {breweryList.map((brewery, index) => (
-          <li key={index}>
-            <Image height="60%" name={brewery.name}>
+      {itemId ? (
+        <Moddal>
+          <ModalContent>
+            <ModalHeader>
               <div></div>
-            </Image>
-
-            <Text>
-              <h3>{brewery.name}</h3>
-              <p>📍 {brewery.addr}</p>
-              <p>📱 {brewery.phone}</p>
-              <a href={brewery.homepage} target="_blank">
-                🔗 홈페이지이동
-              </a>
-            </Text>
-          </li>
-        ))}
-      </ul>
+              <h3>{modalData.name}</h3>
+            </ModalHeader>
+            <ModalBody>{/* <KakaoMap /> */}</ModalBody>
+            <ModalFooter></ModalFooter>
+          </ModalContent>
+        </Moddal>
+      ) : null}
+      <Goingsool breweryList={breweryList} />
     </Wrapper>
   );
 }
