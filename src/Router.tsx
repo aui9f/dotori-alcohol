@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "./Layout";
 import HomeBrew from "./pages/HomeBrew";
 import Information from "./pages/Information";
+import Login from "./pages/Login";
 import MyPage from "./pages/MyPage";
 import Offline from "./pages/Offline";
 
@@ -38,6 +39,10 @@ const Router = createBrowserRouter([
         element: <MyPage />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 export default Router;

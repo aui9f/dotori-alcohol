@@ -1,4 +1,6 @@
+import { auth } from "../fbase";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div``;
 const Lists = styled.ul`
@@ -69,8 +71,24 @@ const Icon = styled.div`
   border-radius: 100%;
   margin-right: 4px;
 `;
-
+const Add = styled.div`
+  width: 48px;
+  height: 48px;
+  background-color: red;
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  border-radius: 100%;
+`;
 export default function HomeBrew() {
+  const navi = useNavigate();
+  const onClick = () => {
+    if (auth.currentUser === null) {
+      if (confirm("로그인 회원만 작성할수 있습니다. 로그인하시겠습니까?")) {
+        navi("/login");
+      }
+    }
+  };
   return (
     <Wrapper>
       <Lists>
@@ -274,6 +292,7 @@ export default function HomeBrew() {
           </Item>
         </Li>
       </Lists>
+      <Add onClick={onClick} />
     </Wrapper>
   );
 }
