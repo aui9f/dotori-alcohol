@@ -1,5 +1,8 @@
 import styled from "styled-components";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { userLogout } from "@/api/firestoreApi";
+import { useSetRecoilState } from "recoil";
+import { loginUserInfo } from "@/api/atom";
 const Head = styled.div`
   position: fixed;
   top: 0;
@@ -30,7 +33,9 @@ const Menu = styled.ul`
 `;
 const Item = styled.li<{ isactive: string }>`
   margin: 0 12px;
-  a {
+  a,
+  p {
+    cursor: pointer;
     color: ${(props) => (props.isactive === "active" ? "#FFFFFF" : "#dddddd")};
     font-weight: ${(props) => (props.isactive === "active" ? "bold" : "")};
   }
@@ -48,9 +53,31 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-export default function Header() {
-  const nav = useLocation();
-  const pathname = nav.pathname;
+export default function Header({ isLogin }: { isLogin: boolean }) {
+  const loginUser = useSetRecoilState(loginUserInfo);
+  const navi = useNavigate();
+  const location = useLocation();
+
+  const pathname = location.pathname;
+  const login = () => {
+    navi("/login");
+  };
+
+  const logout = async () => {
+    await userLogout();
+    await loginUser({
+      uid: "",
+      createdAt: 0,
+      email: "",
+      nickname: "",
+      photo: "",
+      profile: "",
+      role: "",
+      status: "",
+      updateAt: 0,
+    });
+  };
+
   return (
     <Head>
       <Logo>
@@ -68,11 +95,15 @@ export default function Header() {
             <Link to="/">가양주</Link>
           </Item>
           <Item isactive={pathname === "/mypage" ? "active" : ""}>
-            <Link to="/mypage">내정보</Link>
+            {isLogin ? <Link to="/mypage">내정보</Link> : <p>내정보</p>}
           </Item>
         </Menu>
         <User>
-          <Button>LOGIN</Button>
+          {isLogin ? (
+            <Button onClick={logout}>LOGOUT</Button>
+          ) : (
+            <Button onClick={login}>LOGIN</Button>
+          )}
         </User>
       </Nav>
     </Head>

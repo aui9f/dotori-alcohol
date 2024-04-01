@@ -1,11 +1,14 @@
-import { Children } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import Layout from "./Layout";
-import HomeBrew from "./pages/HomeBrew";
-import Information from "./pages/Information";
-import Login from "./pages/Login";
-import MyPage from "./pages/MyPage";
-import Offline from "./pages/Offline";
+import ModalUserSettings from "@/components/ModalUserSettings";
+import Bookmark from "@/components/mypage/Bookmark";
+import Layout from "@/Layout";
+import HomeBrew from "@/pages/HomeBrew";
+import Information from "@/pages/Information";
+import Join from "@/pages/Join";
+import Login from "@/pages/Login";
+import MyPage from "@/pages/MyPage";
+import Offline from "@/pages/Offline";
+import ProtectedRoute from "./ProtectedRoutes";
 
 const Router = createBrowserRouter([
   {
@@ -37,12 +40,39 @@ const Router = createBrowserRouter([
       {
         path: "/mypage",
         element: <MyPage />,
+        // element: <MyPage />,
+        children: [
+          {
+            path: "",
+            element: <Bookmark />,
+          },
+          // {
+          //   path: "like",
+          //   element: <Bookmark />,
+          // },
+          // {
+          //   path: "/bookmark",
+          //   element: <Bookmark />,
+          // },
+          {
+            path: "off-line",
+            element: <Bookmark />,
+          },
+          {
+            path: "settings",
+            element: <ModalUserSettings />,
+          },
+        ],
       },
     ],
   },
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/join",
+    element: <Join />,
   },
 ]);
 export default Router;

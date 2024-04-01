@@ -81,8 +81,10 @@ const Add = styled.div`
   border-radius: 100%;
 `;
 export default function HomeBrew() {
+  console.log("[[USER]]", auth.currentUser);
   const navi = useNavigate();
   const onClick = () => {
+    console.log("auth.currentUser", auth.currentUser);
     if (auth.currentUser === null) {
       if (confirm("로그인 회원만 작성할수 있습니다. 로그인하시겠습니까?")) {
         navi("/login");
@@ -106,8 +108,8 @@ export default function HomeBrew() {
             <Text>
               <h4>호박 막걸리 만들기</h4>
               <p>
-                찹쌀을 깨끗이 씻어 6시간 불렸다가 건져서 물기를 1시간 정도 빼어
-                고두밥을 짓는다.
+                찹쌀을 깨끗이 씻어 6시간 불렸다가 건져서 물기를 1시간 정도
+                빼어고두밥을 짓는다.
               </p>
             </Text>
 
